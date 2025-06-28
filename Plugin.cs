@@ -25,7 +25,7 @@ public class Plugin : BaseUnityPlugin {
     private static void MainMenuHook(Action<MenuManager> orig, MenuManager self) {
         orig.Invoke(self);
         var menuObject = AccessTools.Field(typeof(MenuManager), "menuObject").GetValue(self) as GameObject;
-        MenuAPI.mainMenuBuilder?.Invoke(menuObject.transform);
+        MenuAPI.BuildMenuButton(menuObject.transform);
     }
     
     private void Awake() {
@@ -50,12 +50,10 @@ public class Plugin : BaseUnityPlugin {
         canvas.renderMode = RenderMode.ScreenSpaceOverlay;
         canvas.sortingOrder = 1;
         var settingPage = Instantiate(MenuAPI.SettingPagePrefab, canvas.transform);
-        MenuAPI.menuController = settingPage.GetComponent<MenuController>();
+        MenuAPI.MenuController = settingPage.GetComponent<MenuController>();
         
-        MenuAPI.AddButtonToMainMenu(parent => {
-            MenuAPI.CreateMenuButton("Mod", parent, () => {
-                settingPage.SetActive(!settingPage.activeSelf);
-            });
+        MenuAPI.AddButtonToMainMenu("Mod", () => {
+            settingPage.SetActive(!settingPage.activeSelf);
         });
 
 #if DEBUG
