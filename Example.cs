@@ -35,6 +35,14 @@ public class Example {
                 , parent, s => {
                     Plugin.Logger.LogInfo($"Dropdown toggled: {s}");
                 }, null);
+            
+            var floatInput = MenuAPI.CreateFloatInputField("Example Float Input", 0.5f, 0.25f, 1f, 0f, parent, (value) => {
+                Plugin.Logger.LogInfo($"Float input changed: {value}");
+            });
+            
+            var intInput = MenuAPI.CreateIntInputField("Example Int Input", 5, 1, 10, 0, parent, (value) => {
+                Plugin.Logger.LogInfo($"Int input changed: {value}");
+            });
         });
     }
 }

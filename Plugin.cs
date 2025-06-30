@@ -9,6 +9,7 @@ using MonoMod.RuntimeDetour;
 using PerfectRandom.Sulfur.Core;
 using PerfectRandom.Sulfur.Core.UI;
 using UnityEngine;
+using UnityEngine.EventSystems;
 using UnityEngine.UI;
 
 namespace MenuLib;
@@ -48,6 +49,7 @@ public class Plugin : BaseUnityPlugin {
         MenuAPI.CheckBoxPrefab = ab.LoadAsset<GameObject>("BoolCheckBox");
         MenuAPI.CategoryPagePrefab = ab.LoadAsset<GameObject>("CategoryItem");
         MenuAPI.DropDownPrefab = ab.LoadAsset<GameObject>("EnumDropdown");
+        MenuAPI.InputFieldPrefab = ab.LoadAsset<GameObject>("NumberInputField");
         
         var menulib = new GameObject("MenuLib");
         menulib.hideFlags = HideFlags.HideAndDontSave;

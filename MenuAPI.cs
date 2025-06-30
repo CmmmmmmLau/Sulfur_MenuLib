@@ -15,15 +15,12 @@ using Toggle = UnityEngine.UI.Toggle;
 namespace MenuLib;
 
 public class MenuAPI {
-    public delegate void MenuBuilderDelegate(Transform parent);
-    public delegate void CategoryBuilderDelegate();
-    public delegate void SettingBuilderDelegate(string category);
-    
     public static MenuController MenuController;
     public static GameObject SettingPagePrefab;
     public static GameObject CategoryPagePrefab;
     public static GameObject CheckBoxPrefab;
     public static GameObject DropDownPrefab;
+    public static GameObject InputFieldPrefab;
     
     private class MenuEntry {
         public string name;
@@ -132,7 +129,7 @@ public class MenuAPI {
         var checkBoxController = checkBoxObject.GetComponent<CheckBoxController>();
         checkBoxController.Initialize(label, state, defaultState, onToggle);
         
-        return checkBoxController.GetComponent<Toggle>();
+        return checkBoxObject.GetComponentInChildren<Toggle>();
     }
 
     public static Dropdown CreateDropDown<T>(string label, List<T> options, T option, T defaultOption, Transform container, 
@@ -141,10 +138,10 @@ public class MenuAPI {
         var dropDownController = dropDownObject.GetComponent<DropDownController>();
         dropDownController.Initialize<T>(label, options, option, defaultOption, toString, onValueChanged);
         
-        return dropDownController.GetComponent<Dropdown>();
+        return dropDownObject.GetComponentInChildren<Dropdown>();
     }
     
-    public static Dropdown CreateDropDown<T>(string label, T option, T defaultOption, Transform container, 
+    public static TMP_Dropdown CreateDropDown<T>(string label, T option, T defaultOption, Transform container, 
         Action<T> onValueChanged, Func<T, string> toString = null) where T : Enum {
         var dropDownObject = Object.Instantiate(DropDownPrefab, container);
         var dropDownController = dropDownObject.GetComponent<DropDownController>();
@@ -153,6 +150,28 @@ public class MenuAPI {
             .ToList();
         dropDownController.Initialize<T>(label, options, option, defaultOption, toString, onValueChanged);
         
-        return dropDownController.GetComponent<Dropdown>();
+        return dropDownObject.GetComponentInChildren<TMP_Dropdown>();
+    }
+
+    public static TMP_InputField CreateFloatInputField(string label, float value, float defaultValue, float maxValue, float minValue,
+        Transform container, Action<float> onValueChanged) {
+        var inputFieldObject = Object.Instantiate(InputFieldPrefab, container);
+        var inputFieldController = inputFieldObject.GetComponent<InputFieldController>();
+        var inputField = inputFieldObject.GetComponentInChildren<TMP_InputField>();
+        
+        inputFieldController.Initialize(label, value, defaultValue, maxValue, minValue, onValueChanged);
+        
+        return null;
+    }
+    
+    public static TMP_InputField CreateIntInputField(string label, int value, int defaultValue, int maxValue, int minValue,
+        Transform container, Action<int> onValueChanged) {
+        var inputFieldObject = Object.Instantiate(InputFieldPrefab, container);
+        var inputFieldController = inputFieldObject.GetComponent<InputFieldController>();
+        var inputField = inputFieldObject.GetComponentInChildren<TMP_InputField>();
+        
+        inputFieldController.Initialize(label, value, defaultValue, maxValue, minValue, onValueChanged);
+        
+        return null;
     }
 }
