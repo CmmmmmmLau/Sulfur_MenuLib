@@ -35,6 +35,12 @@ public class MenuController: MonoBehaviour {
         }
     }
 
+    private void Update() {
+        if (Input.GetKeyDown(KeyCode.Escape)) {
+            this.gameObject.SetActive(false);
+        }
+    }
+
     public Button AddCategory(string category, bool needPanel = true) {
         var categoryObject = Instantiate(MenuAPI.CategoryPagePrefab, CategoryContainer.transform);
         Plugin.Logger.LogInfo($"Added category: {category}");

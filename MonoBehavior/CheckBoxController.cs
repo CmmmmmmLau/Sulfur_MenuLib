@@ -29,7 +29,6 @@ public class CheckBoxController: MonoBehaviour{
         this.resetButton.onClick.AddListener(
             () => {
                 toggle.isOn = defaultState;
-                onToggle?.Invoke(defaultState);
             }
         );
     }
