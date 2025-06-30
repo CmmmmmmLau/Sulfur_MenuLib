@@ -23,6 +23,7 @@ public class MenuAPI {
     public static GameObject DropDownPrefab;
     public static GameObject InputFieldPrefab;
     public static GameObject SliderFieldPrefab;
+    public static GameObject ButtonPrefab;
     
     private class MenuEntry {
         public string name;
@@ -197,5 +198,13 @@ public class MenuAPI {
         sliderFieldController.Initialize(label, value, defaultValue, minValue, maxValue, onValueChanged);
         
         return slider;
+    }
+
+    public static Button CreateButton(string label, Transform container, Action onClick) {
+        var button = Object.Instantiate(ButtonPrefab, container);
+        var buttonController = button.GetComponent<ButtonController>();
+        buttonController.Initialize(label, onClick);
+        
+        return button.GetComponentInChildren<Button>();
     }
 }

@@ -26,6 +26,10 @@ public class Example {
             var intSlider = MenuAPI.CreateIntSliderField("Example Int Slider", 7, 1, 0, 10, parent, (value) => {
                 Plugin.Logger.LogInfo($"Int slider changed: {value}");
             });
+            
+            var button = MenuAPI.CreateButton("Example Button", parent, () => {
+                Plugin.Logger.LogInfo("Button clicked!");
+            });
         });
         
         categoryName = "Example Category 3";

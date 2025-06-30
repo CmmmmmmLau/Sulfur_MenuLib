@@ -51,6 +51,7 @@ public class Plugin : BaseUnityPlugin {
         MenuAPI.DropDownPrefab = ab.LoadAsset<GameObject>("EnumDropdown");
         MenuAPI.InputFieldPrefab = ab.LoadAsset<GameObject>("NumberInputField");
         MenuAPI.SliderFieldPrefab = ab.LoadAsset<GameObject>("SliderField");
+        MenuAPI.ButtonPrefab = ab.LoadAsset<GameObject>("ButtonItem");
         
         var menulib = new GameObject("MenuLib");
         menulib.hideFlags = HideFlags.HideAndDontSave;
