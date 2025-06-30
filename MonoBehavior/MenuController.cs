@@ -52,7 +52,10 @@ public class MenuController: MonoBehaviour {
             layout.spacing = 6;
             layout.childControlHeight = true;
             layout.childControlWidth = true;
-            layout.childForceExpandWidth = false;
+            layout.childScaleHeight = false;
+            layout.childScaleWidth = false;
+            layout.childForceExpandWidth = true;
+            layout.childForceExpandHeight = false;
             CategoryPanel[category] = panel;
         }
         

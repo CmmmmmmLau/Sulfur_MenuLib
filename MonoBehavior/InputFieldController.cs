@@ -16,14 +16,19 @@ public class InputFieldController: MonoBehaviour {
         this.inputField = this.GetComponentInChildren<TMP_InputField>();
         this.label = this.GetComponentInChildren<TMP_Text>();
         this.resetButton = this.transform.Find("Reset").GetComponent<Button>();
+        
+        this.resetButton.onClick.AddListener(
+            () => {
+                inputField.text = this.defaultValue;
+                this.inputField.onEndEdit?.Invoke(this.defaultValue);
+            }
+        );
     }
 
     public void Initialize(string label, float value, float defaultValue, float maxValue, float minValue,
         Action<float> onEndEdit) {
-        this.label.text = label;
-        this.inputField.text = value.ToString();
-        this.defaultValue = defaultValue.ToString();
-        this.inputField.contentType = TMP_InputField.ContentType.DecimalNumber;
+        
+        this.DoSetup(label, value.ToString(), defaultValue.ToString(), TMP_InputField.ContentType.DecimalNumber);
         
         this.inputField.onEndEdit.AddListener((value) => {
             float.TryParse(value, out float result);
@@ -35,21 +40,12 @@ public class InputFieldController: MonoBehaviour {
             this.inputField.text = result.ToString();
             onEndEdit?.Invoke(result);
         });
-                
-        this.resetButton.onClick.AddListener(
-            () => {
-                inputField.text = defaultValue.ToString();
-                this.inputField.onEndEdit?.Invoke(this.defaultValue);
-            }
-        );
     }
     
     public void Initialize(string label, int value, int defaultValue, int maxValue, int minValue,
         Action<int> onEndEdit) {
-        this.label.text = label;
-        this.inputField.text = value.ToString();
-        this.defaultValue = defaultValue.ToString();
-        this.inputField.contentType = TMP_InputField.ContentType.DecimalNumber;
+
+        this.DoSetup(label, value.ToString(), defaultValue.ToString(), TMP_InputField.ContentType.IntegerNumber);
         
         this.inputField.onEndEdit.AddListener((value) => {
             int.TryParse(value, out int result);
@@ -59,12 +55,12 @@ public class InputFieldController: MonoBehaviour {
             this.inputField.text = result.ToString();
             onEndEdit?.Invoke(result);
         });
-        
-        this.resetButton.onClick.AddListener(
-            () => {
-                inputField.text = defaultValue.ToString();
-                this.inputField.onEndEdit?.Invoke(this.defaultValue);
-            }
-        );
+    }
+    
+    private void DoSetup(string label, string value, string defaultValue, TMP_InputField.ContentType contentType){
+        this.label.text = label;
+        this.inputField.text = value;
+        this.defaultValue = defaultValue;
+        this.inputField.contentType = contentType;
     }
 }

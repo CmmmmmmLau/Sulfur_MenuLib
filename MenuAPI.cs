@@ -10,6 +10,7 @@ using UnityEngine.UI;
 using UnityEngine.UIElements;
 using Button = UnityEngine.UI.Button;
 using Object = UnityEngine.Object;
+using Slider = UnityEngine.UI.Slider;
 using Toggle = UnityEngine.UI.Toggle;
 
 namespace MenuLib;
@@ -21,6 +22,7 @@ public class MenuAPI {
     public static GameObject CheckBoxPrefab;
     public static GameObject DropDownPrefab;
     public static GameObject InputFieldPrefab;
+    public static GameObject SliderFieldPrefab;
     
     private class MenuEntry {
         public string name;
@@ -173,5 +175,27 @@ public class MenuAPI {
         inputFieldController.Initialize(label, value, defaultValue, maxValue, minValue, onValueChanged);
         
         return null;
+    }
+    
+    public static Slider CreateFloatSliderField(string label, float value, float defaultValue, float minValue, float maxValue,
+        Transform container, Action<float> onValueChanged) {
+        var sliderFieldObject = Object.Instantiate(SliderFieldPrefab, container);
+        var sliderFieldController = sliderFieldObject.GetComponent<SliderFieldController>();
+        var slider = sliderFieldObject.GetComponentInChildren<Slider>();
+        
+        sliderFieldController.Initialize(label, value, defaultValue, minValue, maxValue, onValueChanged);
+        
+        return slider;
+    }
+    
+    public static Slider CreateIntSliderField(string label, int value, int defaultValue, int minValue, int maxValue,
+        Transform container, Action<int> onValueChanged) {
+        var sliderFieldObject = Object.Instantiate(SliderFieldPrefab, container);
+        var sliderFieldController = sliderFieldObject.GetComponent<SliderFieldController>();
+        var slider = sliderFieldObject.GetComponentInChildren<Slider>();
+        
+        sliderFieldController.Initialize(label, value, defaultValue, minValue, maxValue, onValueChanged);
+        
+        return slider;
     }
 }

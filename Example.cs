@@ -18,6 +18,14 @@ public class Example {
             var toggle = MenuAPI.CreateCheckBox("Example CheckBox", true, false, parent, (value) => {
                 Plugin.Logger.LogInfo($"Checkbox toggled: {value}");
             });
+            
+            var floatSlider = MenuAPI.CreateFloatSliderField("Example Float Slider", 0.75f, 0.5f, 0f, 1f, parent, (value) => {
+                Plugin.Logger.LogInfo($"Float slider changed: {value}");
+            });
+            
+            var intSlider = MenuAPI.CreateIntSliderField("Example Int Slider", 7, 1, 0, 10, parent, (value) => {
+                Plugin.Logger.LogInfo($"Int slider changed: {value}");
+            });
         });
         
         categoryName = "Example Category 3";

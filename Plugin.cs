@@ -50,6 +50,7 @@ public class Plugin : BaseUnityPlugin {
         MenuAPI.CategoryPagePrefab = ab.LoadAsset<GameObject>("CategoryItem");
         MenuAPI.DropDownPrefab = ab.LoadAsset<GameObject>("EnumDropdown");
         MenuAPI.InputFieldPrefab = ab.LoadAsset<GameObject>("NumberInputField");
+        MenuAPI.SliderFieldPrefab = ab.LoadAsset<GameObject>("SliderField");
         
         var menulib = new GameObject("MenuLib");
         menulib.hideFlags = HideFlags.HideAndDontSave;
@@ -59,6 +60,14 @@ public class Plugin : BaseUnityPlugin {
         canvas.transform.SetParent(menulib.transform, false);
         canvas.renderMode = RenderMode.ScreenSpaceOverlay;
         canvas.sortingOrder = 2;
+        
+        var scaler = canvas.gameObject.AddComponent<CanvasScaler>();
+        scaler.uiScaleMode = CanvasScaler.ScaleMode.ScaleWithScreenSize;
+        scaler.referenceResolution = new Vector2(1920, 1080);
+        scaler.screenMatchMode = CanvasScaler.ScreenMatchMode.MatchWidthOrHeight;
+        scaler.matchWidthOrHeight = 1f;
+        scaler.referencePixelsPerUnit = 100f;
+        
         var settingPage = Instantiate(MenuAPI.SettingPagePrefab, canvas.transform);
         MenuAPI.MenuController = settingPage.GetComponent<MenuController>();
         
