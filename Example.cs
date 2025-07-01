@@ -1,4 +1,6 @@
-﻿namespace MenuLib;
+﻿using UnityEngine;
+
+namespace MenuLib;
 
 public class Example {
     private enum ExampleEnum {
@@ -29,6 +31,10 @@ public class Example {
             
             var button = MenuAPI.CreateButton("Example Button", parent, () => {
                 Plugin.Logger.LogInfo("Button clicked!");
+            });
+            
+            MenuAPI.CreateColorPicker("Example Color Picker", Color.white, Color.red, parent, (color) => {
+                Plugin.Logger.LogInfo($"Color picked: {color}");
             });
         });
         

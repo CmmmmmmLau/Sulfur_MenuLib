@@ -9,7 +9,6 @@ using MonoMod.RuntimeDetour;
 using PerfectRandom.Sulfur.Core;
 using PerfectRandom.Sulfur.Core.UI;
 using UnityEngine;
-using UnityEngine.EventSystems;
 using UnityEngine.UI;
 
 namespace MenuLib;
@@ -18,7 +17,7 @@ namespace MenuLib;
 public class Plugin : BaseUnityPlugin {
     private const string MOD_GUID = "cmmmmmm.menulib";
     private const string MOD_NAME = "MenuLib";
-    private const string MOD_VERSION = "1.0.0";
+    private const string MOD_VERSION = "0.0.1";
     
     internal static AssetBundle ab;
 
@@ -52,6 +51,7 @@ public class Plugin : BaseUnityPlugin {
         MenuAPI.InputFieldPrefab = ab.LoadAsset<GameObject>("NumberInputField");
         MenuAPI.SliderFieldPrefab = ab.LoadAsset<GameObject>("SliderField");
         MenuAPI.ButtonPrefab = ab.LoadAsset<GameObject>("ButtonItem");
+        MenuAPI.ColorPickerPrefab = ab.LoadAsset<GameObject>("ColorPicker");
         
         var menulib = new GameObject("MenuLib");
         menulib.hideFlags = HideFlags.HideAndDontSave;

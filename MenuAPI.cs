@@ -24,6 +24,7 @@ public class MenuAPI {
     public static GameObject InputFieldPrefab;
     public static GameObject SliderFieldPrefab;
     public static GameObject ButtonPrefab;
+    public static GameObject ColorPickerPrefab;
     
     private class MenuEntry {
         public string name;
@@ -206,5 +207,11 @@ public class MenuAPI {
         buttonController.Initialize(label, onClick);
         
         return button.GetComponentInChildren<Button>();
+    }
+
+    public static void CreateColorPicker(string label, Color color, Color defaultColor, Transform container, Action<Color> onColorChanged) {
+        var picker = Object.Instantiate(ColorPickerPrefab, container);
+        var colorPickerController = picker.GetComponent<ColourPickerController>();
+        colorPickerController.Initialize(label, color, defaultColor, onColorChanged);
     }
 }
