@@ -31,7 +31,7 @@ public class Plugin : BaseUnityPlugin {
 
     private static void PauseMenuHook(Action<UIManager> orig, UIManager self) {
         orig.Invoke(self);
-        MenuAPI.BuildPauseMenuButton(StaticInstance<UIManager>.Instance.PauseMenu.transform);
+        MenuAPI.BuildPauseMenuButton(self.PauseMenu.transform);
     }
     
     private void Awake() {
