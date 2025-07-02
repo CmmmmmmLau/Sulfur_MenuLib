@@ -5,24 +5,24 @@ using UnityEngine.UI;
 
 namespace MenuLib.MonoBehavior;
 
-public class InputFieldController: MonoBehaviour {
+public class InputFieldController: BaseSettingItem {
     private TMP_InputField inputField;
-    private TMP_Text label;
-    private Button resetButton;
     
     private string defaultValue;
+    private string currentValue;
+    private string pendingValue;
     
-    private void Awake() {
+    protected override void Awake() {
         this.inputField = this.GetComponentInChildren<TMP_InputField>();
-        this.label = this.GetComponentInChildren<TMP_Text>();
-        this.resetButton = this.transform.Find("Reset").GetComponent<Button>();
         
         this.resetButton.onClick.AddListener(
             () => {
                 inputField.text = this.defaultValue;
-                this.inputField.onEndEdit?.Invoke(this.defaultValue);
+                this.pendingValue = this.defaultValue;
             }
         );
+        
+        base.Awake();
     }
 
     public void Initialize(string label, float value, float defaultValue, float maxValue, float minValue,
@@ -37,9 +37,21 @@ public class InputFieldController: MonoBehaviour {
                 ? Mathf.Clamp(num, minValue, maxValue)
                 : float.Parse(this.defaultValue);
             
-            this.inputField.text = result.ToString();
-            onEndEdit?.Invoke(result);
+            this.inputField.SetTextWithoutNotify(result.ToString());
+            this.pendingValue = result.ToString();
+            
+            menuController.RegisterDeferredSetting(this);
         });
+        
+        this.applyHandler = () => {
+            this.currentValue = this.pendingValue;
+            
+            if (float.TryParse(this.pendingValue, out float result)) {
+                onEndEdit?.Invoke(result);
+            } else {
+                Debug.LogWarning("Invalid input value: " + this.pendingValue);
+            }
+        };
     }
     
     public void Initialize(string label, int value, int defaultValue, int maxValue, int minValue,
@@ -52,9 +64,21 @@ public class InputFieldController: MonoBehaviour {
             
             result = int.TryParse(value, out int num)? Mathf.Clamp(num, minValue, maxValue): int.Parse(this.defaultValue);
             
-            this.inputField.text = result.ToString();
-            onEndEdit?.Invoke(result);
+            this.inputField.SetTextWithoutNotify(result.ToString());
+            this.pendingValue = result.ToString();
+            
+            menuController.RegisterDeferredSetting(this);
         });
+        
+        this.applyHandler = () => {
+            this.currentValue = this.pendingValue;
+            
+            if (int.TryParse(this.pendingValue, out int result)) {
+                onEndEdit?.Invoke(result);
+            } else {
+                Debug.LogWarning("Invalid input value: " + this.pendingValue);
+            }
+        };
     }
     
     private void DoSetup(string label, string value, string defaultValue, TMP_InputField.ContentType contentType){
@@ -62,5 +86,10 @@ public class InputFieldController: MonoBehaviour {
         this.inputField.text = value;
         this.defaultValue = defaultValue;
         this.inputField.contentType = contentType;
+    }
+    
+    public override void ApplySetting() {
+        applyHandler?.Invoke();
+        base.ApplySetting();
     }
 }

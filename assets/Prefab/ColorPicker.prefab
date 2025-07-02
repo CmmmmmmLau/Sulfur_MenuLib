@@ -213,6 +213,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2bb4888f403317343b70c4d95f76f020, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  menuController: {fileID: 0}
+  label: {fileID: 5990290269028196475}
+  resetButton: {fileID: 1244181972708010824}
   R: 0
   G: 0
   B: 0

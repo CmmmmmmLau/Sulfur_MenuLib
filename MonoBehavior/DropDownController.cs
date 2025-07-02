@@ -7,20 +7,19 @@ using UnityEngine.UI;
 
 namespace MenuLib.MonoBehavior;
 
-public class DropDownController: MonoBehaviour {
+public class DropDownController: BaseSettingItem {
     private TMP_Dropdown dropdown;
-    private TMP_Text label;
-    private Button resetButton;
     
-    private int defaultOption;
+    private int defaultIndex;
+    private int currentIndex;
+    private int pendingIndex;
 
-    private void Awake() {
-        this.label = this.GetComponentInChildren<TMP_Text>();
-        this.resetButton = this.transform.Find("Reset").GetComponent<Button>();
+    protected override void Awake() {
         this.dropdown = this.gameObject.GetComponentInChildren<TMP_Dropdown>();
         this.dropdown.ClearOptions();
 
         this.dropdown.onValueChanged.RemoveAllListeners();
+        base.Awake();
     }
 
     
@@ -28,24 +27,35 @@ public class DropDownController: MonoBehaviour {
         this.label.text = label;
         this.dropdown.AddOptions(options.Select(option => toString == null? option.ToString() : toString(option)).ToList());
         
-        this.dropdown.value = options.IndexOf(option);
-        this.defaultOption = options.IndexOf(defaultOption);
-        dropdown.RefreshShownValue();
+        this.currentIndex = options.IndexOf(option);
+        this.dropdown.value = this.currentIndex;
+        
+        this.defaultIndex = options.IndexOf(defaultOption);
+        this.dropdown.RefreshShownValue();
 
         this.dropdown.onValueChanged.AddListener(
             (index) => {
-                var value = options[index];
-                onValueChanged?.Invoke(value);
+                this.pendingIndex = index;
+                menuController.RegisterDeferredSetting(this);
             }
         );
         
         this.resetButton.onClick.AddListener(
             () => {
-                var value = options.IndexOf(defaultOption);
-
-                dropdown.value = value;
-                dropdown.RefreshShownValue();
+                this.dropdown.value = this.defaultIndex;
+                this.dropdown.RefreshShownValue();
             }
         );
+        
+        this.applyHandler = () => {
+            this.currentIndex = this.pendingIndex;
+            var value = options[this.currentIndex];
+            onValueChanged?.Invoke(value);
+        };
+    }
+
+    public override void ApplySetting() {
+        applyHandler?.Invoke();
+        base.ApplySetting();
     }
 }

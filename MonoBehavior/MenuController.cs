@@ -10,9 +10,13 @@ public class MenuController: MonoBehaviour {
     public GameObject CategoryContainer;
     [SerializeField] 
     public GameObject SettingContainer;
-    
+    [SerializeField]
+    private Button applyButton;
+
     public Dictionary<string, GameObject> CategoryPanel = new ();
     private GameObject currentCategoryPanel;
+    
+    private List<IDeferredSetting> deferredSettings = new List<IDeferredSetting>();
 
     private void Awake() {
         foreach (Transform child in CategoryContainer.transform) {
@@ -22,6 +26,9 @@ public class MenuController: MonoBehaviour {
         foreach (Transform child in SettingContainer.transform) {
             GameObject.Destroy(child.gameObject);
         }
+        
+        applyButton.onClick.AddListener(ApplyDeferredSetting);
+        applyButton.enabled = false;
         
         this.gameObject.SetActive(false);
     }
@@ -71,5 +78,20 @@ public class MenuController: MonoBehaviour {
         } else {
             Plugin.Logger.LogWarning($"Category '{category}' not found.");
         }
+    }
+    
+    public void RegisterDeferredSetting(IDeferredSetting setting) {
+        if (!deferredSettings.Contains(setting)) {
+            deferredSettings.Add(setting);
+        }
+        
+        applyButton.enabled = deferredSettings.Count > 0;
+    }
+
+    public void ApplyDeferredSetting() {
+        foreach (var setting in deferredSettings) {
+            setting.ApplySetting();
+        }
+        deferredSettings.Clear();
     }
 }

@@ -5,38 +5,43 @@ using UnityEngine.UI;
 
 namespace MenuLib.MonoBehavior;
 
-public class CheckBoxController: MonoBehaviour{
+public class CheckBoxController: BaseSettingItem{
     private Toggle toggle;
-    private TMP_Text label;
-    private Button resetButton;
-    
     private bool defaultState;
-    
-    Action<bool> onToggle;
-    
+    private bool currentState;
+    private bool pendingState;
 
-    private void Awake() {
-        this.label = this.GetComponentInChildren<TMP_Text>();
-        this.resetButton = this.transform.Find("Reset").GetComponent<Button>();
+    protected override void Awake() {
         this.toggle = this.gameObject.GetComponentInChildren<Toggle>();
-        
-        this.toggle.onValueChanged.AddListener(
-            (value) => {
-                onToggle?.Invoke(value);
-            }
-        );
-
-        this.resetButton.onClick.AddListener(
-            () => {
-                toggle.isOn = defaultState;
-            }
-        );
+        base.Awake();
     }
-    
+
     public void Initialize(string labelText, bool state, bool defaultState, Action<bool> onToggle) {
         this.label.text = labelText;
         this.defaultState = defaultState;
-        this.onToggle = onToggle;
         this.toggle.isOn = state;
+        this.currentState = state;
+        this.pendingState = state;
+        
+        this.toggle.onValueChanged.AddListener(value => {
+            this.pendingState = value;
+            menuController.RegisterDeferredSetting(this);
+        });
+        
+        this.resetButton.onClick.AddListener(
+            () => {
+                this.toggle.isOn = this.defaultState;
+            }
+        );
+        
+        this.applyHandler = () => {
+            this.currentState = this.pendingState;
+            onToggle?.Invoke(this.currentState);
+        };
+    }
+
+    public override void ApplySetting() {
+        applyHandler?.Invoke();
+        base.ApplySetting();
     }
 }

@@ -33,7 +33,7 @@ public class Example {
                 Plugin.Logger.LogInfo("Button clicked!");
             });
             
-            MenuAPI.CreateColorPicker("Example Color Picker", Color.white, Color.red, parent, (color) => {
+            MenuAPI.CreateColorPicker("Example Color Picker", new Color(0.3f, 0.4f, 0.5f), Color.red, parent, (color) => {
                 Plugin.Logger.LogInfo($"Color picked: {color}");
             });
         });

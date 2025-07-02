@@ -5,7 +5,7 @@ using UnityEngine.UI;
 
 namespace MenuLib.MonoBehavior;
 
-public class ColourPickerController: MonoBehaviour {
+public class ColourPickerController: BaseSettingItem {
     public int R, G, B, A;
 
     [SerializeField] 
@@ -20,40 +20,37 @@ public class ColourPickerController: MonoBehaviour {
     [SerializeField] 
     private GameObject ColourPickerContainer;
 
-    private Texture2D RTexture, GTexture, BTexture, ATexture, OutputTexture;
-    private TMP_Text label;
-    private Button resetButton;
+    private Texture2D RTexture, GTexture, BTexture, ATexture;
+    
+    private Color defaultColor;
+    private Color currentColor;
+    private Color pendingColor;
 
-    private void Awake() {
-        this.label = this.transform.Find("Top/Label").GetComponentInChildren<TMP_Text>();
-        this.resetButton = this.transform.Find("Top/Reset").GetComponent<Button>();
-        
-        
-        RSlider.onValueChanged.AddListener(arg0 => { RInputField.text = ((int) arg0).ToString(); });
-        GSlider.onValueChanged.AddListener(arg0 => { GInputField.text = ((int) arg0).ToString(); });
-        BSlider.onValueChanged.AddListener(arg0 => { BInputField.text = ((int) arg0).ToString(); });
-        ASlider.onValueChanged.AddListener(arg0 => { AInputField.text = ((int) arg0).ToString(); });
+    protected override void Awake() {
+        RSlider.onValueChanged.AddListener(value => {
+            UpdateInputField(RInputField, value);
+        });
+        GSlider.onValueChanged.AddListener(value => {
+            UpdateInputField(GInputField, value);
+        });
+        BSlider.onValueChanged.AddListener(value => {
+            UpdateInputField(BInputField, value);
+        });
+        ASlider.onValueChanged.AddListener(value => {
+            UpdateInputField(AInputField, value);
+        });
 
-        RInputField.onEndEdit.AddListener((arg0 =>
-            RSlider.value = int.TryParse(arg0, out int r) ? Mathf.Clamp(r, 0, 255) : RSlider.value));
-        GInputField.onEndEdit.AddListener((arg0 =>
-            GSlider.value = int.TryParse(arg0, out int g) ? Mathf.Clamp(g, 0, 255) : GSlider.value));
-        BInputField.onEndEdit.AddListener((arg0 =>
-            BSlider.value = int.TryParse(arg0, out int b) ? Mathf.Clamp(b, 0, 255) : BSlider.value));
-        AInputField.onEndEdit.AddListener((arg0 =>
-            ASlider.value = int.TryParse(arg0, out int a) ? Mathf.Clamp(a, 0, 255) : ASlider.value));
-
-        RInputField.onValueChanged.AddListener((arg0 => { UpdateColor(); }));
-        GInputField.onValueChanged.AddListener((arg0 => { UpdateColor(); }));
-        BInputField.onValueChanged.AddListener((arg0 => { UpdateColor(); }));
-        AInputField.onValueChanged.AddListener((arg0 => { UpdateColor(); }));
-
-        OutputField.onEndEdit.AddListener(value => {
-            var colour = ColorUtility.TryParseHtmlString("#" + value, out Color color) ? color : Color.white;
-
-            RSlider.value = (int) (colour.r * 255);
-            GSlider.value = (int) (colour.g * 255);
-            BSlider.value = (int) (colour.b * 255);
+        RInputField.onEndEdit.AddListener(value => {
+            UpdateSlider(RSlider, RInputField, value);
+        });
+        GInputField.onEndEdit.AddListener(value => {
+            UpdateSlider(GSlider, GInputField, value);
+        });
+        BInputField.onEndEdit.AddListener(value => {
+            UpdateSlider(BSlider, BInputField, value);
+        });
+        AInputField.onEndEdit.AddListener(value => {
+            UpdateSlider(ASlider, AInputField, value);
         });
 
         OutputImage.GetComponent<Button>().onClick.AddListener(() => {
@@ -61,10 +58,29 @@ public class ColourPickerController: MonoBehaviour {
         });
         
         CreateTexture();
+        
+        base.Awake();
+    }
+
+    private void UpdateSlider(Slider slider, TMP_InputField field, string value) {
+        if (!int.TryParse(value, out int num)) {
+            num = 255;
+        }
+        num = Mathf.Clamp(num, 0, 255);
+        BInputField.SetTextWithoutNotify(num.ToString());
+        slider.SetValueWithoutNotify(num);
+        UpdateTexture();
+    }
+    
+    private void UpdateInputField(TMP_InputField field, float value) {
+        if (field.text != value.ToString()) {
+            field.SetTextWithoutNotify(value.ToString());
+            UpdateTexture();
+        }
     }
 
     private void CreateTexture() {
-        RTexture = new Texture2D(255, 1);
+        RTexture = new Texture2D(256, 1);
         for (int i = 0; i < 256; i++) {
             RTexture.SetPixel(i, 0, new Color(i / 255f, 0, 0, 1));
         }
@@ -72,7 +88,7 @@ public class ColourPickerController: MonoBehaviour {
         RTexture.Apply();
         RImage.sprite = Sprite.Create(RTexture, new Rect(0, 0, RTexture.width, RTexture.height), Vector2.zero);
 
-        GTexture = new Texture2D(255, 1);
+        GTexture = new Texture2D(256, 1);
         for (int i = 0; i < 256; i++) {
             GTexture.SetPixel(i, 0, new Color(0, i / 255f, 0, 1));
         }
@@ -80,7 +96,7 @@ public class ColourPickerController: MonoBehaviour {
         GTexture.Apply();
         GImage.sprite = Sprite.Create(GTexture, new Rect(0, 0, GTexture.width, GTexture.height), Vector2.zero);
 
-        BTexture = new Texture2D(255, 1);
+        BTexture = new Texture2D(256, 1);
         for (int i = 0; i < 256; i++) {
             BTexture.SetPixel(i, 0, new Color(0, 0, i / 255f, 1));
         }
@@ -88,7 +104,7 @@ public class ColourPickerController: MonoBehaviour {
         BTexture.Apply();
         BImage.sprite = Sprite.Create(BTexture, new Rect(0, 0, BTexture.width, BTexture.height), Vector2.zero);
 
-        ATexture = new Texture2D(255, 1);
+        ATexture = new Texture2D(256, 1);
         for (int i = 0; i < 256; i++) {
             ATexture.SetPixel(i, 0, new Color(1, 1, 1, i / 255f));
         }
@@ -97,44 +113,37 @@ public class ColourPickerController: MonoBehaviour {
         AImage.sprite = Sprite.Create(ATexture, new Rect(0, 0, ATexture.width, ATexture.height), Vector2.zero);
     }
 
-    public void UpdateColor() {
+    public void UpdateTexture() {
         R = (int) RSlider.value;
         G = (int) GSlider.value;
         B = (int) BSlider.value;
         A = (int) ASlider.value;
 
-        RInputField.text = R.ToString();
-        GInputField.text = G.ToString();
-        BInputField.text = B.ToString();
-        AInputField.text = A.ToString();
-
         for (int i = 0; i < 256; i++) {
             RTexture.SetPixel(i, 0, new Color(i / 255f, G / 255f, B / 255f, 1));
         }
-
         RTexture.Apply();
 
         for (int i = 0; i < 256; i++) {
             GTexture.SetPixel(i, 0, new Color(R / 255f, i / 255f, B / 255f, 1));
         }
-
         GTexture.Apply();
 
         for (int i = 0; i < 256; i++) {
             BTexture.SetPixel(i, 0, new Color(R / 255f, G / 255f, i / 255f, 1));
         }
-
         BTexture.Apply();
 
         for (int i = 0; i < 256; i++) {
             ATexture.SetPixel(i, 0, new Color(R / 255f, G / 255f, B / 255f, i / 255f));
         }
-
         ATexture.Apply();
 
         Color color = new Color(R / 255f, G / 255f, B / 255f, A / 255f);
         OutputImage.color = color;
         OutputField.text = ColorUtility.ToHtmlStringRGB(color);
+        
+        this.pendingColor = color;
     }
     
     public void Initialize(string label, Color color, Color defaultColor, Action<Color> onColorChanged) {
@@ -144,16 +153,41 @@ public class ColourPickerController: MonoBehaviour {
         GSlider.value = color.g * 255;
         BSlider.value = color.b * 255;
         ASlider.value = color.a * 255;
+        
+        OutputField.onEndEdit.AddListener(value => {
+            var colour = ColorUtility.TryParseHtmlString("#" + value, out Color color) ? color : Color.white;
+
+            RSlider.value = (int) (colour.r * 255);
+            GSlider.value = (int) (colour.g * 255);
+            BSlider.value = (int) (colour.b * 255);
+        });
 
         OutputField.onValueChanged.AddListener(value => {
-            ColorUtility.TryParseHtmlString("#" + value, out Color color);
-            onColorChanged?.Invoke(color);
+            if (ColorUtility.TryParseHtmlString("#" + value, out Color color)) {
+                this.pendingColor = color;
+                menuController.RegisterDeferredSetting(this);
+            }
         });
         
         this.resetButton.onClick.AddListener(() => {
-            OutputField.text = ColorUtility.ToHtmlStringRGB(color);
+            RSlider.value = defaultColor.r * 255;
+            GSlider.value = defaultColor.g * 255;
+            BSlider.value = defaultColor.b * 255;
+            ASlider.value = defaultColor.a * 255;
+
+            this.pendingColor = defaultColor;
         });
+
+        this.applyHandler += () => {
+            this.currentColor = this.pendingColor;
+            onColorChanged?.Invoke(this.currentColor);
+        };
         
+        UpdateTexture();
         ColourPickerContainer.SetActive(false);
+    }
+
+    public override void ApplySetting() {
+        this.applyHandler?.Invoke();
     }
 }

@@ -1,7 +1,9 @@
 ﻿using UnityEngine;
 
 namespace MenuLib.MonoBehavior {
-    public class SliderFieldController: MonoBehaviour {
-        
+    public class SliderFieldController: BaseSettingItem {
+        public override void ApplySetting() {
+            
+        }
     }
 }
