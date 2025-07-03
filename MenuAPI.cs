@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using I2.Loc;
 using MenuLib.MonoBehavior;
 using PerfectRandom.Sulfur.Core;
 using TMPro;
@@ -117,6 +118,7 @@ public class MenuAPI {
         var buttonObject = Object.Instantiate(template, container);
         buttonObject.transform.SetSiblingIndex(container.childCount - 2);
         Object.Destroy(buttonObject.GetComponent<FontLocalizer>());
+        Object.Destroy(buttonObject.GetComponentInChildren<Localize>());
         
         var button = buttonObject.GetComponent<Button>();
         button.onClick = new Button.ButtonClickedEvent();
