@@ -15,9 +15,9 @@ namespace MenuLib;
 
 [BepInPlugin(MOD_GUID, MOD_NAME, MOD_VERSION)]
 public class Plugin : BaseUnityPlugin {
-    private const string MOD_GUID = "cmmmmmm.menulib";
-    private const string MOD_NAME = "MenuLib";
-    private const string MOD_VERSION = "0.0.1";
+    public const string MOD_GUID = "cmmmmmm.menulib";
+    public const string MOD_NAME = "MenuLib";
+    public const string MOD_VERSION = "0.0.1";
     
     internal static AssetBundle ab;
 
@@ -52,6 +52,7 @@ public class Plugin : BaseUnityPlugin {
         MenuAPI.SliderFieldPrefab = ab.LoadAsset<GameObject>("SliderField");
         MenuAPI.ButtonPrefab = ab.LoadAsset<GameObject>("ButtonItem");
         MenuAPI.ColorPickerPrefab = ab.LoadAsset<GameObject>("ColorPicker");
+        MenuAPI.BarPrefab = ab.LoadAsset<GameObject>("Bar");
         
         var menulib = new GameObject("MenuLib");
         menulib.hideFlags = HideFlags.HideAndDontSave;
