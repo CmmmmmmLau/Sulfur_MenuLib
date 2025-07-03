@@ -215,6 +215,7 @@ public class MenuAPI {
     }
 
     public static void CreateBar(string label, Transform container) {
-        Object.Instantiate(BarPrefab, container);
+        var bar = Object.Instantiate(BarPrefab, container);
+        bar.GetComponent<TMP_Text>().text = label;
     }
 }
